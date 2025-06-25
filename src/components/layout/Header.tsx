@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               <span className="text-white font-bold text-xl">ই</span>
             </div>
             <span className="text-xl font-medium text-primary-600 dark:text-primary-400">
-              ইসলামিক হাব
+              হিদায়াহ 
             </span>
           </Link>
         </div>
