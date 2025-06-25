@@ -16,21 +16,21 @@ export default function ReciverDashboard() {
   const donations = [
     {
       date: "01/15/2024",
-      amount: "$250",
+      amount: "৳250",
       receiver: "Ahmad Family",
       category: "Poor & Needy",
       status: "Completed",
     },
     {
       date: "01/10/2024",
-      amount: "$500",
+      amount: "৳500",
       receiver: "Education Fund",
       category: "Education",
       status: "Completed",
     },
     {
       date: "01/08/2024",
-      amount: "$150",
+      amount: "৳150",
       receiver: "Medical Aid",
       category: "Healthcare",
       status: "Pending",
@@ -109,10 +109,10 @@ export default function ReciverDashboard() {
             <div className="flex items-center justify-between mb-4">
               <span className="text-gray-600 text-sm">Total Donated</span>
               <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                <span className="text-gray-600">$</span>
+                <span className="text-gray-600">৳</span>
               </div>
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-2">$4,500</div>
+            <div className="text-3xl font-bold text-gray-900 mb-2">৳4,500</div>
             <div className="flex items-center text-sm text-green-600">
               <TrendingUp className="w-4 h-4 mr-1" />
               <span>+12% from last month</span>
