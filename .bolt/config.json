@@ -1,0 +1,20 @@
+{
+  "template": "bolt-vite-react-ts",
+  "features": {
+    "backend": true,
+    "database": "mongodb",
+    "tailwind": true,
+    "lucide-react": true,
+    "react-hooks": true,
+    "typescript": true
+  },
+  "design": {
+    "quality": "production",
+    "style": "custom-beautiful",
+    "icons": "lucide-react"
+  },
+  "constraints": {
+    "no-ui-libraries": true,
+    "no-cookie-cutter": true
+  }
+}

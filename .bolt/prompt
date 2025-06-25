@@ -1,0 +1,17 @@
+Build a fullstack web app with both frontend and backend. Use React with JSX, Tailwind CSS, React hooks, and Lucide React icons. Design must be beautiful, responsive, and production-ready—avoid cookie-cutter layouts.
+
+Frontend must include:
+
+Clean component structure
+
+Professional, modern UI using Tailwind
+
+Lucide React icons for all iconography (no external UI libraries unless necessary)
+
+Backend must include:
+
+RESTful or RPC-style API (preferably Node.js/Express or Supabase Edge Functions)
+
+Connected to a database (MongoDB or Supabase)
+
+Ensure the frontend fetches and displays data from the backend. All components and logic should be built cleanly and professionally with scalability in mind. Avoid generic or lazy solutions.
