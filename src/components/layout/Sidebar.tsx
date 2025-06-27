@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { name: "দোয়া ও যিকর", path: "/dua", icon: <Heart size={20} /> },
     {
       name: "দান করুন",
-      path: "/dashboard/donate",
+      path: "/donate",
       icon: <HeartHandshake size={20} />,
     },
     { name: "Login", path: "/auth/login", icon: <LogIn size={20} /> },
