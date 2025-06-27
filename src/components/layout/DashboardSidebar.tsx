@@ -46,7 +46,7 @@ const DashboardSidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     },
     {
       name: "দান করুন",
-      path: "/dashboard/donate",
+      path: "/donate",
       icon: <HeartHandshake size={20} />,
     },
     { name: "ইতিহাস", path: "/histroy", icon: <Timer size={20} /> },
