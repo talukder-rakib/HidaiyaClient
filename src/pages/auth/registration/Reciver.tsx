@@ -2,8 +2,8 @@
 import AppForm from "../../../components/form/AppForm";
 import AppButton from "../../../components/form/ui/AppButton";
 
-import { NavLink, useNavigate } from "react-router-dom";
-import AppFormInput from "../../../components/form/ui/AppFormInput ";
+import { useNavigate } from "react-router-dom";
+import AppFormInput from "../../../components/form/ui/AppFormInput";
 import { useCreateReciverMutation } from "../../../redux/features/reciver/Reciver.api";
 import { toast } from "sonner";
 
@@ -15,12 +15,12 @@ interface DonorFormData {
 }
 
 const Reciver = () => {
-  const [createRciver] = useCreateReciverMutation();
+  const [createReciver] = useCreateReciverMutation();
   const navigate = useNavigate();
 
   const onSubmit = (data: DonorFormData) => {
     console.log("Form submitted with data:", data);
-    // const toastId = toast.loading("Cerating...");
+    // const toastId = toast.loading("Creating...");
     // Map to your backend payload
     const payload = {
       password: data.password,
@@ -32,22 +32,19 @@ const Reciver = () => {
     };
 
     // Replace this with your API call
-    // apiService.createDonor(payload).then(...).catch(...)
+    // apiService.createReciver(payload).then(...).catch(...)
     console.log("Backend payload:", payload);
-    createRciver(payload)
+    createReciver(payload)
       .unwrap()
       .then((response) => {
-        //console.log("Donor created successfully:", response);
-        toast.success("Donor registered successfully!");
+        toast.success("Reciver registered successfully!");
         navigate("/auth/login");
       })
       .catch((error) => {
-        console.error("Error creating donor:", error);
-        toast.error("Failed to register donor. Please try again.", {
-          //id: toastId,
+        console.error("Error creating reciver:", error);
+        toast.error("Failed to register reciver. Please try again.", {
           duration: 2000,
         });
-
         // Handle error (e.g., show a toast notification)
       });
   };
@@ -59,12 +56,12 @@ const Reciver = () => {
           Reciver Registration
         </h2>
         <AppForm onSubmit={onSubmit}>
-          <AppFormInput name="name" label="Full Name" required />{" "}
+          <AppFormInput name="name" label="Full Name" required />
           <AppFormInput
             name="gender"
             label="Gender"
             required
-            helperText="Gender must be use lowercase 'male' or 'female"
+            helperText="Gender must be use lowercase 'male' or 'female'"
           />
           <AppFormInput name="email" label="Email" type="email" required />
           <AppFormInput
