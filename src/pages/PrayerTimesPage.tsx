@@ -11,7 +11,8 @@ const PrayerTimesPage: React.FC = () => {
             title="নামাজের সময়সূচী (বাংলাদেশ)" 
             subtitle="বাংলাদেশের সকল জেলার জন্য সঠিক নামাজের সময় দেখুন"
           />
-          <PrayerTimesWidget />
+          {/* 1. Add a location icon and 4. Loading state handled in PrayerTimesWidget */}
+          <PrayerTimesWidget showLocationIcon showLoading showErrorToast highlightCurrentNextPrayer responsivePadding />
         </div>
         <div className="mt-8 card p-6 bg-white/90 dark:bg-gray-900/80 rounded-xl shadow border border-gray-100 dark:border-gray-800">
           <h3 className="text-xl font-semibold text-green-800 dark:text-green-200 mb-4 flex items-center gap-2">
