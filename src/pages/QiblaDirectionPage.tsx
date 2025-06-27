@@ -165,7 +165,10 @@ export default function QiblaDirectionPage() {
         </div>
       ) : qiblaDirection !== null ? (
         <>
-          <div className="relative w-40 h-40 xs:w-48 xs:h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 my-4 xs:my-5 sm:my-6 mx-auto">
+          <div
+            className="relative w-36 h-36 xs:w-44 xs:h-44 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-96 lg:h-96 my-4 xs:my-5 sm:my-6 mx-auto"
+            style={{ maxWidth: '90vw', maxHeight: '60vw', minWidth: 120, minHeight: 120 }}
+          >
             <div className="absolute inset-0">
               <div className="compass-container">
                 <div className="compass-body">
@@ -182,29 +185,29 @@ export default function QiblaDirectionPage() {
               </div>
               {/* Bangla Direction Labels */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-700 dark:text-gray-300 font-bold select-none">
-                <div className="absolute top-1 left-1/2 -translate-x-1/2 text-xs xs:text-sm sm:text-base" style={{ top: '6px' }}>
+                <div className="absolute top-1 left-1/2 -translate-x-1/2 text-[10px] xs:text-xs sm:text-sm md:text-base lg:text-lg" style={{ top: '6px' }}>
                   উ
                 </div>
                 {/* North */}
-                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs xs:text-sm sm:text-base" style={{ bottom: '6px' }}>
+                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[10px] xs:text-xs sm:text-sm md:text-base lg:text-lg" style={{ bottom: '6px' }}>
                   দ
                 </div>
                 {/* South */}
-                <div className="absolute left-1 top-1/2 -translate-y-1/2 text-xs xs:text-sm sm:text-base" style={{ left: '6px' }}>
+                <div className="absolute left-1 top-1/2 -translate-y-1/2 text-[10px] xs:text-xs sm:text-sm md:text-base lg:text-lg" style={{ left: '6px' }}>
                   প
                 </div>
                 {/* West */}
-                <div className="absolute right-1 top-1/2 -translate-y-1/2 text-xs xs:text-sm sm:text-base" style={{ right: '6px' }}>
+                <div className="absolute right-1 top-1/2 -translate-y-1/2 text-[10px] xs:text-xs sm:text-sm md:text-base lg:text-lg" style={{ right: '6px' }}>
                   পূ
                 </div>
                 {/* East */}
               </div>
             </div>
             <animated.div
-              className="absolute left-1/2 top-1/2 w-1 sm:w-1.5 xs:w-2 h-20 xs:h-24 sm:h-32 md:h-40 bg-red-600 rounded-full origin-bottom z-10"
+              className="absolute left-1/2 top-1/2 w-1 xs:w-1.5 sm:w-2 md:w-2.5 lg:w-3 h-16 xs:h-20 sm:h-28 md:h-36 lg:h-48 bg-red-600 rounded-full origin-bottom z-10"
               style={{
                 transform: arrowAnim.rotation.to(
-                  (r) => `translate(-50%, -100%) rotate3d(0, 0, 1, ${r}deg)`
+                  (r: number) => `translate(-50%, -100%) rotate3d(0, 0, 1, ${r}deg)`
                 ),
               }}
             />
