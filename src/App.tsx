@@ -33,6 +33,7 @@ import ReciverDashboard from "./pages/dashboard/ReciverDashboard";
 import AuthLayout from "./components/layout/AuthLayout";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import DonorDashboard from "./pages/dashboard/DonorDashboard";
+import ZakatRequestForm from "./pages/dashboard/ZakatRequestForm";
 
 function App() {
   const { direction } = useDirection();
@@ -88,6 +89,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route path="zakatDonor" element={<DonorDashboard />} />
           <Route path="zakatReciver" element={<ReciverDashboard />} />
+          <Route path="zakat-request" element={<ZakatRequestForm />} />
           <Route path="donate" element={<DonatePage />} />
         </Route>
       </Routes>
