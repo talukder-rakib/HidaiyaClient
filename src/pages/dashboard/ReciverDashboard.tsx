@@ -13,7 +13,9 @@ import { useAppSelector } from "../../redux/hooks";
 import { selectToken, TUser } from "../../redux/features/auth/authSlice";
 import { verifyToken } from "../../utils/verifyToken";
 
-export default function ReceiverDashboard() {
+export default function ReciverDashboard() {
+  console.log("ReciverDashboard rendered"); // Debug render
+
   // Static sample requests — replace with API or Redux state
   const requests = [
     {
@@ -78,6 +80,7 @@ export default function ReceiverDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
+      <div>Test Render</div> {/* Debug: Should always show */}
       {/* Header */}
       <header className="bg-white shadow-sm px-4 md:px-6 py-4 flex justify-between items-center border-b border-gray-200 sticky top-0 z-30">
         <div className="flex items-center gap-4">
@@ -308,7 +311,10 @@ export default function ReceiverDashboard() {
                     </h4>
                     <time
                       className="text-xs text-gray-400 select-none"
-                      dateTime={new Date(item.date).toISOString()}
+                      dateTime={(() => {
+                        const d = new Date(item.date);
+                        return isNaN(d.getTime()) ? "" : d.toISOString();
+                      })()}
                     >
                       {item.date}
                     </time>
