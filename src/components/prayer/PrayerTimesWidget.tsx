@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Globe, MapPin } from 'lucide-react';
+import { Clock, Globe, MapPin, Loader2, AlertCircle } from 'lucide-react';
 import { Coordinates, CalculationMethod, PrayerTimes, Prayer } from 'adhan';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
@@ -95,7 +95,16 @@ function mapApiTimings(t: Record<string, string>): Record<PrayerKey, string> {
   };
 }
 
-const PrayerTimesWidget: React.FC = () => {
+// Add prop types for UI/UX enhancements
+interface PrayerTimesWidgetProps {
+  showLocationIcon?: boolean;
+  showLoading?: boolean;
+  showErrorToast?: boolean;
+  highlightCurrentNextPrayer?: boolean;
+  responsivePadding?: boolean;
+}
+
+const PrayerTimesWidget: React.FC<PrayerTimesWidgetProps> = () => {
   const [selectedLocation, setSelectedLocation] = useState(() => {
     const saved = localStorage.getItem('selectedLocation');
     if (saved) {
@@ -116,6 +125,8 @@ const PrayerTimesWidget: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<string | null>(null);
   const [hijriDate, setHijriDate] = useState<string | null>(null);
   const [timeZone, setTimeZone] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Get user location on mount, fallback to manual
   useEffect(() => {
@@ -143,6 +154,8 @@ const PrayerTimesWidget: React.FC = () => {
 
   // Fetch prayer times and setup PrayerTimes instance
   useEffect(() => {
+    setLoading(true);
+    setFetchError(null);
     const dateStr = dayjs().format('DD-MM-YYYY');
     const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${selectedLocation.lat}&longitude=${selectedLocation.lng}&method=3`;
 
@@ -160,9 +173,16 @@ const PrayerTimesWidget: React.FC = () => {
           const pt = new PrayerTimes(coords, new Date(), params);
           setPrayerTimes(pt);
           setCurrentDate(new Date());
+          setLoading(false);
+        } else {
+          setFetchError('নামাজের সময় আনতে সমস্যা হয়েছে।');
+          setLoading(false);
         }
       })
-      .catch(console.error);
+      .catch(() => {
+        setFetchError('নামাজের সময় আনতে সমস্যা হয়েছে।');
+        setLoading(false);
+      });
   }, [selectedLocation]);
 
   // Update currentDate every minute to detect date change
@@ -215,11 +235,13 @@ const PrayerTimesWidget: React.FC = () => {
   const formatLocal = (date: Date) => dayjs(date).format('h:mm A');
 
   return (
-    <div className="card shadow rounded-lg overflow-hidden max-w-md mx-auto">
+    <div className="card shadow rounded-lg overflow-hidden max-w-md mx-auto p-2 sm:p-4 md:p-6 lg:p-8">
       {/* Header */}
-      <div className="p-4 bg-primary-500 text-white flex justify-between items-center">
+      <div className="p-4 bg-primary-500 text-white flex justify-between items-center rounded-t-lg">
         <div>
-          <h3 className="text-xl font-semibold">নামাজের সময়সূচী</h3>
+          <h3 className="text-xl font-semibold flex items-center gap-2">
+            <MapPin size={20} className="inline-block mr-1 text-white" /> নামাজের সময়সূচী
+          </h3>
           {hijriDate && <p className="text-sm mt-0.5">হিজরি: {hijriDate}</p>}
         </div>
         <div className="flex items-center space-x-2 text-sm">
@@ -227,11 +249,10 @@ const PrayerTimesWidget: React.FC = () => {
           <span>{dayjs(currentDate).format('DD MMMM, YYYY')}</span>
         </div>
       </div>
-
-      <div className="p-4">
-        {/* Location Selector */}
-        <label htmlFor="location-select" className="text-sm mb-1 block font-medium">
-          স্থান নির্বাচন করুন
+      <div className="p-2 sm:p-4 md:p-6">
+        {/* Location Selector with icon */}
+        <label htmlFor="location-select" className="text-sm mb-1 block font-medium flex items-center gap-1">
+          <MapPin size={16} className="text-green-600 dark:text-green-300" /> স্থান নির্বাচন করুন
         </label>
         <select
           id="location-select"
@@ -252,42 +273,54 @@ const PrayerTimesWidget: React.FC = () => {
             ))}
         </select>
 
-        {/* Timezone display */}
-        {timeZone && (
-          <div className="mb-3 text-sm text-gray-500 flex items-center gap-1">
-            <MapPin size={14} /> টাইম জোন: {timeZone}
+        {/* 4. Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center gap-2 text-green-700 dark:text-green-300 my-6">
+            <Loader2 className="animate-spin" /> নামাজের সময় লোড হচ্ছে...
           </div>
         )}
-
+        {/* 6. Error Toast/Alert */}
+        {fetchError && (
+          <div className="flex items-center gap-2 bg-red-50 dark:bg-red-900/40 border-l-4 border-red-400 dark:border-red-600 p-3 rounded text-red-800 dark:text-red-200 my-4" role="alert">
+            <AlertCircle size={18} /> {fetchError}
+          </div>
+        )}
+        {/* Timezone display */}
+        {timeZone && !loading && (
+          <div className="mb-3 text-sm text-gray-500 flex items-center gap-1">
+            <Globe size={14} /> টাইম জোন: {timeZone}
+          </div>
+        )}
         {/* Current prayer */}
-        {currentPrayer && currentPrayer !== 'none' && (
+        {currentPrayer && currentPrayer !== 'none' && !loading && (
           <motion.div
             key={`current-${currentPrayer}`}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="my-2 text-center font-medium text-green-700 dark:text-green-300"
+            className="my-2 text-center font-bold text-green-700 dark:text-green-300 text-base"
             aria-live="polite"
           >
-            চলমান নামাজ: {prayerNames[currentPrayer]}
+            <span className="inline-block px-2 py-1 rounded bg-green-100 dark:bg-green-800/60 text-green-800 dark:text-green-100 mr-2">চলমান</span>
+            {prayerNames[currentPrayer]}
           </motion.div>
         )}
-
         {/* Next prayer with countdown */}
-        {nextPrayer && nextPrayer !== 'none' && timeLeft && (
+        {nextPrayer && nextPrayer !== 'none' && timeLeft && !loading && (
           <motion.div
             key={`next-${nextPrayer}`}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="mb-4 text-center font-semibold text-primary-700 dark:text-primary-300"
+            className="mb-4 text-center font-semibold text-primary-700 dark:text-primary-300 text-base"
             aria-live="polite"
           >
-            পরবর্তী নামাজ: {prayerNames[nextPrayer]} ({timeLeft} বাকি)
+            <span className="inline-block px-2 py-1 rounded bg-blue-100 dark:bg-blue-800/60 text-blue-800 dark:text-blue-100 mr-2">পরবর্তী</span>
+            {prayerNames[nextPrayer]} <span className="ml-1">({timeLeft} বাকি)</span>
           </motion.div>
         )}
-
         {/* Prayer Times Table */}
+        {!loading && (
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm border dark:border-gray-700" role="table" aria-label="নামাজের সময়সূচী টেবিল">
             <thead>
@@ -309,12 +342,15 @@ const PrayerTimesWidget: React.FC = () => {
                   .map((key) => {
                     const prayerTime = prayerTimes.timeForPrayer(key);
                     const isCurrent = currentPrayer === key;
+                    const isNext = nextPrayer === key;
                     return (
                       <tr
                         key={key}
-                        className={`border-t dark:border-gray-600 ${
+                        className={`border-t dark:border-gray-600 transition-all duration-200 ${
                           isCurrent
-                            ? 'bg-primary-100 dark:bg-primary-900 font-bold text-primary-800 border-l-4 border-primary-500'
+                            ? 'bg-green-100 dark:bg-green-900 font-bold text-green-800 border-l-4 border-green-500'
+                            : isNext
+                            ? 'bg-blue-50 dark:bg-blue-900 font-semibold text-blue-800 border-l-4 border-blue-400'
                             : ''
                         }`}
                       >
@@ -327,6 +363,7 @@ const PrayerTimesWidget: React.FC = () => {
             </tbody>
           </table>
         </div>
+        )}
       </div>
     </div>
   );
