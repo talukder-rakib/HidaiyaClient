@@ -3,10 +3,11 @@ import AppForm from "../../../components/form/AppForm";
 import AppButton from "../../../components/form/ui/AppButton";
 
 import { useNavigate } from "react-router-dom";
-import AppFormInput from "../../../components/form/ui/AppFormInput ";
+import AppFormInput from "../../../components/form/ui/AppFormInput";
 import AppFormTextarea from "../../../components/form/ui/AppFormTextarea";
 import AppFormSelect from "../../../components/form/ui/AppformSelect";
 import { useGetmeQuery } from "../../../redux/features/auth/authApi";
+import { useState } from "react";
 
 //import { useCreateDonorMutation } from "../../../redux/features/donor/Donate.api";
 
@@ -27,43 +28,39 @@ const medthodOption = [
 ];
 
 const Donate = () => {
-  //const [createDonor] = useCreateDonorMutation();
+  const [loading, setLoading] = useState(false);
   const { data: getme } = useGetmeQuery("zakatDonor");
-  console.log("getme :>> ", getme);
   const navigate = useNavigate();
 
-  const onSubmit = (data: DonorFormData) => {
-    console.log("Form submitted with data:", data);
-    //const toastId = toast.loading("Cerating...");
-    // Map to your backend payload
-    const payload = {
-      password: data.password,
-      donor: {
-        name: data.name,
-        gender: data.gender,
-        email: data.email,
-      },
-    };
-
-    // Replace this with your API call
-    // apiService.createDonor(payload).then(...).catch(...)
-    console.log("Backend payload:", payload);
-    //createDonor(payload)
-    //   .unwrap()
-    //   .then((response) => {
-    //     //console.log("Donate created successfully:", response);
-    //     toast.success("Donate registered successfully!");
-    //     navigate("/auth/login");
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error creating donor:", error);
-    //     toast.error("Failed to register donor. Please try again.", {
-    //       //id: toastId,
-    //       duration: 2000,
-    //     });
-
-    //     // Handle error (e.g., show a toast notification)
-    //   });
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+    try {
+      // Call your backend to create a payment session
+      const response = await fetch(
+        "https://your-backend.com/api/payment/initiate",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: data.amount,
+            date: data.date,
+            method: data.method,
+            message: data.message,
+            donor: getme || {},
+          }),
+        }
+      );
+      const result = await response.json();
+      if (result.paymentUrl) {
+        window.location.href = result.paymentUrl;
+      } else {
+        alert("Failed to initiate payment.");
+      }
+    } catch (error: any) {
+      alert("Payment error: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -86,7 +83,12 @@ const Donate = () => {
           />
           <AppFormTextarea name="message" label="Message" />
 
-          <AppButton type="submit" label="Donate Now" className="mt-4 w-full" />
+          <AppButton
+            type="submit"
+            label={loading ? "Processing..." : "Donate Now"}
+            className="mt-4 w-full"
+            disabled={loading}
+          />
         </AppForm>
       </div>
     </div>
