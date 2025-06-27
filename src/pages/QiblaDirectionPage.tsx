@@ -5,25 +5,10 @@ import { createClient } from '@supabase/supabase-js';
 import { Button } from '../components/ui/button';
 import { animated, useSpring } from 'react-spring';
 import { Loader2 } from 'lucide-react';
-import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
-import L from 'leaflet';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl!, supabaseKey!);
-
-const fallbackIcon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-});
-
-function MapPreview({ lat, lng }: { lat: number; lng: number }) {
-  const map = useMap();
-  useEffect(() => {
-    map.setView([lat, lng], 13);
-  }, [lat, lng]);
-  return null;
-}
 
 export default function QiblaDirectionPage() {
   const [qiblaDirection, setQiblaDirection] = useState<number | null>(null);
@@ -139,22 +124,22 @@ export default function QiblaDirectionPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white font-sans">
-      <h1 className="text-2xl md:text-3xl font-bold mb-4 text-center">কিবলার দিক নির্দেশনা</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen px-2 sm:px-4 py-4 bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white font-sans">
+      <h1 className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold mb-2 xs:mb-3 sm:mb-4 text-center leading-tight">কিবলার দিক নির্দেশনা</h1>
 
-      {error && <div className="text-red-600 text-sm text-center mb-2">{error}</div>}
+      {error && <div className="text-red-600 text-xs xs:text-sm sm:text-base text-center mb-2 max-w-xs sm:max-w-md mx-auto">{error}</div>}
 
       {manualPrompt && (
-        <form onSubmit={handleManualSubmit} className="mt-4 text-center space-y-2">
-          <p className="text-sm">অথবা নিজে আপনার লোকেশন দিন:</p>
-          <div className="flex gap-2 justify-center">
+        <form onSubmit={handleManualSubmit} className="mt-2 xs:mt-3 sm:mt-4 text-center space-y-2 w-full max-w-xs sm:max-w-sm mx-auto">
+          <p className="text-xs xs:text-sm sm:text-base">অথবা নিজে আপনার লোকেশন দিন:</p>
+          <div className="flex flex-col xs:flex-row gap-2 justify-center items-center">
             <input
               name="lat"
               type="number"
               step="any"
               required
               placeholder="Latitude"
-              className="border rounded p-1 w-28 text-sm text-gray-900 dark:text-gray-800"
+              className="border rounded p-1 w-full xs:w-28 text-xs xs:text-sm sm:text-base text-gray-900 dark:text-gray-800"
             />
             <input
               name="lng"
@@ -162,31 +147,16 @@ export default function QiblaDirectionPage() {
               step="any"
               required
               placeholder="Longitude"
-              className="border rounded p-1 w-28 text-sm text-gray-900 dark:text-gray-800"
+              className="border rounded p-1 w-full xs:w-28 text-xs xs:text-sm sm:text-base text-gray-900 dark:text-gray-800"
             />
           </div>
-          <Button type="submit">লোকেশন দিন</Button>
+          <Button type="submit" className="w-full xs:w-auto">লোকেশন দিন</Button>
         </form>
-      )}
-
-      {location && (
-        <div className="w-full max-w-md aspect-square md:aspect-video rounded overflow-hidden shadow mt-6">
-          <MapContainer
-            center={[location.lat, location.lng]}
-            zoom={13}
-            scrollWheelZoom={false}
-            className="h-full w-full z-0"
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <MapPreview lat={location.lat} lng={location.lng} />
-            <Marker position={[location.lat, location.lng]} icon={fallbackIcon} />
-          </MapContainer>
-        </div>
       )}
 
       {qiblaDirection === null && !manualPrompt ? (
         <div
-          className="flex items-center gap-2 text-gray-500 text-sm mt-6"
+          className="flex items-center gap-2 text-gray-500 text-xs xs:text-sm sm:text-base mt-4 xs:mt-5 sm:mt-6"
           role="status"
           aria-live="polite"
         >
@@ -195,13 +165,8 @@ export default function QiblaDirectionPage() {
         </div>
       ) : qiblaDirection !== null ? (
         <>
-          <div className="relative w-64 h-64 md:w-80 md:h-80 my-6">
-            <animated.div
-              className="absolute inset-0"
-              style={{
-                transform: compassAnim.rotation.to((r) => `rotate3d(0, 0, 1, ${-r}deg)`),
-              }}
-            >
+          <div className="relative w-40 h-40 xs:w-48 xs:h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 my-4 xs:my-5 sm:my-6 mx-auto">
+            <div className="absolute inset-0">
               <div className="compass-container">
                 <div className="compass-body">
                   <div className="compass-face">
@@ -215,30 +180,28 @@ export default function QiblaDirectionPage() {
                   </div>
                 </div>
               </div>
-
               {/* Bangla Direction Labels */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-700 dark:text-gray-300 font-bold select-none">
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 text-sm" style={{ top: '10px' }}>
+                <div className="absolute top-1 left-1/2 -translate-x-1/2 text-xs xs:text-sm sm:text-base" style={{ top: '6px' }}>
                   উ
-                </div>{' '}
+                </div>
                 {/* North */}
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm" style={{ bottom: '10px' }}>
+                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs xs:text-sm sm:text-base" style={{ bottom: '6px' }}>
                   দ
-                </div>{' '}
+                </div>
                 {/* South */}
-                <div className="absolute left-2 top-1/2 -translate-y-1/2 text-sm" style={{ left: '10px' }}>
+                <div className="absolute left-1 top-1/2 -translate-y-1/2 text-xs xs:text-sm sm:text-base" style={{ left: '6px' }}>
                   প
-                </div>{' '}
+                </div>
                 {/* West */}
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 text-sm" style={{ right: '10px' }}>
-                  পূ 
-                </div>{' '}
+                <div className="absolute right-1 top-1/2 -translate-y-1/2 text-xs xs:text-sm sm:text-base" style={{ right: '6px' }}>
+                  পূ
+                </div>
                 {/* East */}
               </div>
-            </animated.div>
-
+            </div>
             <animated.div
-              className="absolute left-1/2 top-1/2 w-2 h-32 md:h-40 bg-red-600 rounded-full origin-bottom z-10"
+              className="absolute left-1/2 top-1/2 w-1 sm:w-1.5 xs:w-2 h-20 xs:h-24 sm:h-32 md:h-40 bg-red-600 rounded-full origin-bottom z-10"
               style={{
                 transform: arrowAnim.rotation.to(
                   (r) => `translate(-50%, -100%) rotate3d(0, 0, 1, ${r}deg)`
@@ -247,7 +210,7 @@ export default function QiblaDirectionPage() {
             />
           </div>
 
-          <div className="text-center text-sm text-gray-700 dark:text-gray-300" aria-live="polite">
+          <div className="text-center text-xs xs:text-sm sm:text-base text-gray-700 dark:text-gray-300" aria-live="polite">
             <p>বর্তমান দিক: {Math.round(heading)}°</p>
             <p>কিবলার দিক: {Math.round(qiblaDirection)}°</p>
             <p>আপনার আপেক্ষিক দিক: {Math.round(relativeRotation)}°</p>
