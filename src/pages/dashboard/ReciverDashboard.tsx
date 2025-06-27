@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Bell,
   Calendar,
@@ -14,6 +15,7 @@ import { selectToken, TUser } from "../../redux/features/auth/authSlice";
 import { verifyToken } from "../../utils/verifyToken";
 
 export default function ReciverDashboard() {
+  const navigate = useNavigate();
   console.log("ReciverDashboard rendered"); // Debug render
 
   // Static sample requests — replace with API or Redux state
@@ -59,7 +61,7 @@ export default function ReciverDashboard() {
 
   // Handler placeholders
   const handleRequestZakat = () => {
-    alert("Redirecting to Zakat request form...");
+    navigate("/dashboard/zakat-request"); // Redirect to Zakat request form page
   };
 
   const handleFilterRequests = () => {
