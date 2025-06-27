@@ -1,14 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useCompassHeading } from '../hooks/useCompassHeading';
 import { getRelativeRotation } from '../lib/compassUtils';
-import { createClient } from '@supabase/supabase-js';
 import { Button } from '../components/ui/button';
 import { animated, useSpring } from 'react-spring';
 import { Loader2 } from 'lucide-react';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl!, supabaseKey!);
 
 export default function QiblaDirectionPage() {
   const [qiblaDirection, setQiblaDirection] = useState<number | null>(null);
@@ -24,7 +19,7 @@ export default function QiblaDirectionPage() {
   const compassAnim = useSpring({ rotation: heading });
   const arrowAnim = useSpring({ rotation: relativeRotation });
 
-  // Fetch Qibla direction from AlAdhan API and save to Supabase cache
+  // Fetch Qibla direction from AlAdhan API (no Supabase cache)
   const fetchFromAlAdhan = async (lat: number, lng: number) => {
     setError(null);
     try {
@@ -34,11 +29,6 @@ export default function QiblaDirectionPage() {
         setQiblaDirection(data.data.direction);
         setLocation({ lat, lng });
         setError(null);
-
-        // Save to Supabase cache
-        await supabase.from('qibla').insert([
-          { direction: data.data.direction, lat, lng, created_at: new Date().toISOString() },
-        ]);
       } else {
         setError('AlAdhan API থেকে কিবলা দিক পাওয়া যায়নি।');
       }
@@ -48,41 +38,23 @@ export default function QiblaDirectionPage() {
     }
   };
 
-  // Initial fetch logic: try cache, then geolocation, else manual input
+  // Initial fetch logic: try geolocation, else manual input
   useEffect(() => {
     const fetchQibla = async () => {
-      try {
-        const { data } = await supabase
-          .from('qibla')
-          .select('direction, lat, lng')
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        if (data && data.length > 0) {
-          setQiblaDirection(data[0].direction);
-          setLocation({ lat: data[0].lat, lng: data[0].lng });
-          return;
-        }
-
-        if ('geolocation' in navigator) {
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              const { latitude, longitude } = pos.coords;
-              fetchFromAlAdhan(latitude, longitude);
-            },
-            (err) => {
-              console.error(err);
-              setError('লোকেশন অনুমতি পাওয়া যায়নি।');
-              setManualPrompt(true);
-            }
-          );
-        } else {
-          setError('আপনার ডিভাইসে জিওলোকেশন সাপোর্ট নেই।');
-          setManualPrompt(true);
-        }
-      } catch (err) {
-        console.error(err);
-        setError('লোকেশন থেকে কিবলা দিক নির্ধারণে ব্যর্থ।');
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            fetchFromAlAdhan(latitude, longitude);
+          },
+          (err) => {
+            console.error(err);
+            setError('লোকেশন অনুমতি পাওয়া যায়নি।');
+            setManualPrompt(true);
+          }
+        );
+      } else {
+        setError('আপনার ডিভাইসে জিওলোকেশন সাপোর্ট নেই।');
         setManualPrompt(true);
       }
     };
