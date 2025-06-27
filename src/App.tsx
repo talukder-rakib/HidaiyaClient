@@ -92,6 +92,7 @@ function App() {
           <Route path="zakat-request" element={<ZakatRequestForm />} />
           <Route path="donate" element={<DonatePage />} />
         </Route>
+        <Route path="/donate" element={<DonatePage />} />
       </Routes>
       <MobileNavigation />
     </div>
