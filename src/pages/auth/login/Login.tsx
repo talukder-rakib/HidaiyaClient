@@ -4,7 +4,7 @@ import AppForm from "../../../components/form/AppForm";
 import AppButton from "../../../components/form/ui/AppButton";
 
 import { NavLink, useNavigate } from "react-router-dom";
-import AppFormInput from "../../../components/form/ui/AppFormInput ";
+import AppFormInput from "../../../components/form/ui/AppFormInput";
 import { useLoginMutation } from "../../../redux/features/auth/authApi";
 import { useAppDispatch } from "../../../redux/hooks";
 import { toast } from "sonner";
@@ -37,6 +37,7 @@ const Login = () => {
       console.log("res :>> ", res);
       const user = verifyToken(res.data.accessToken) as unknown as TUser;
       console.log("user :>> ", user);
+      console.log("user.role :>> ", user.role); // Debug user role
       dispatch(setUser({ user: user, token: res.data.accessToken }));
       toast.success("Login successful!", { id: toastId, duration: 2000 });
       navigate(`/dashboard/${user.role}`);
