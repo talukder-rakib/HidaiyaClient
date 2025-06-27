@@ -21,6 +21,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useNavigate } from "react-router-dom";
 
 // Example data for Pie Chart
 const pieData = [
@@ -74,14 +75,15 @@ const feedback = [
 ];
 
 export default function DonorDashboard() {
+  const navigate = useNavigate();
   // Get logged-in user info from token
   const token = useAppSelector(selectToken);
   const user = useMemo(() => (token ? (verifyToken(token) as unknown as TUser) : null), [token]);
 
   // Handler placeholders
   const handleGiveZakat = () => {
-    // TODO: Open modal or redirect to donation page
-    alert("Redirecting to donation form...");
+    // Redirect to donation page
+    navigate("/dashboard/donate");
   };
 
   const handleFilterDonations = () => {
@@ -189,7 +191,7 @@ export default function DonorDashboard() {
               value: "2",
               icon: <Calendar className="w-5 h-5 text-gray-600" />,
             },
-          ].map((card, idx) => (
+          ].map((card: any, idx: number) => (
             <article
               key={idx}
               className="bg-white rounded-xl p-6 shadow-sm border border-gray-200"
